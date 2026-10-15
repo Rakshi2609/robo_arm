@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# ROS 2 Wrapper Script
+# Directs standard 'ros2' CLI commands to the solar cleaning ROS ecosystem
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PYTHON_EXEC="python3"
+
+"$PYTHON_EXEC" "$SCRIPT_DIR/ros_solar_cleaner/solar_ros_node.py" "$@"

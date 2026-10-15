@@ -15,3 +15,5 @@ firmware/**/cache/
 # Cloned project repositories
 related_repos/
 repos/
+config.bat
+node_modules

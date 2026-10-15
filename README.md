@@ -20,8 +20,17 @@ An autonomous 6-Degree-of-Freedom (6-DOF) robotic arm system engineered for auto
    - **Ambient Weather Station**: Continuously tracks ambient temperature (°C), relative humidity (%), and solar irradiance (W/m²).
 
 3. **ROS 2 Node & Topic Ecosystem**:
-   - Full standard ROS 2 compatibility with nodes, topics, and an integrated CLI tool (`./ros2`).
-   - Standard joint state broadcasting (`sensor_msgs/JointState`) for 3D kinematic visualization.
+   - Full standard ROS 2 package architecture (`package.xml`, `setup.py`, and Python node scripts).
+   - Real Publisher & Subscriber implementations matching `rclpy.node.Node` standards.
+   - Interactive CLI runner: `./run_ros_nodes.sh` to run individual publishers and subscribers.
+
+### 🧩 ROS 2 Node Architecture & Topic Mapping
+| Node Name | Source File | Topics Published | Topics Subscribed |
+|---|---|---|---|
+| `/solar_telemetry_publisher` | `ros_solar_cleaner/nodes/solar_telemetry_publisher.py` | `/solar/zone_0/current_sensor`<br>`/solar/zone_1/current_sensor`<br>`/solar/zone_2/current_sensor`<br>`/solar/zone_3/current_sensor`<br>`/weather/ambient_telemetry`<br>`/joint_states` | *(None - Data Source)* |
+| `/dust_monitor_subscriber` | `ros_solar_cleaner/nodes/dust_monitor_subscriber.py` | `/cleaning/alert_dirty_panels` | `/solar/zone_0/current_sensor`<br>`/solar/zone_1/current_sensor`<br>`/solar/zone_2/current_sensor`<br>`/solar/zone_3/current_sensor` |
+| `/cleaning_executive_node` | `ros_solar_cleaner/nodes/cleaning_executive_node.py` | `/arm/joint_command`<br>`/cleaning/active_status` | `/cleaning/alert_dirty_panels` |
+| `/arm_hardware_node` | `ros_solar_cleaner/nodes/arm_hardware_node.py` | `/joint_states` | `/arm/joint_command` |
 
 ---
 

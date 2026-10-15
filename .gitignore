@@ -11,3 +11,7 @@ __pycache__/
 # Arduino CLI build cache
 firmware/**/build/
 firmware/**/cache/
+
+# Cloned project repositories
+related_repos/
+repos/

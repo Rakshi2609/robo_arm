@@ -1,0 +1,13 @@
+# Python cache & artifacts
+__pycache__/
+*.pyc
+*.pyo
+
+# Backup & scratch files
+*.bak
+*.bak_*
+*~
+
+# Arduino CLI build cache
+firmware/**/build/
+firmware/**/cache/

@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 """
-PostureGuard Robotic Arm - Automated Arduino Firmware Uploader ("PUSH")
+SolarClean Robotic Arm - Standalone Wall-Charger Firmware Pusher
 Compiles and flashes firmware/PostureGuard_Arm to the connected Arduino Uno.
+Configured specifically for autonomous wall-charger / power-bank operation.
 """
 
 import os
 import sys
 import time
 import subprocess
-import serial.tools.list_ports
-
 import glob
 
 FIRMWARE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "firmware", "PostureGuard_Arm")
@@ -21,9 +20,15 @@ def find_arduino_port():
     return None
 
 def main():
-    print("=" * 65)
-    print(" ⚡ POSTUREGUARD ARDUINO FIRMWARE PUSHER (PORT 5000 DASHBOARD)")
-    print("=" * 65)
+    print("=" * 75)
+    print(" 🔌 ARDUINO UNO STANDALONE WALL-CHARGER FIRMWARE PUSHER")
+    print("=" * 75)
+    print(" Configured for:")
+    print("   • 100% Standalone (Unplug from PC & connect to wall charger)")
+    print("   • 4 Random Solar Cleaning Zones: Left-Top, Left-Btm, Right-Top, Right-Btm")
+    print("   • Alternating CW / CCW Wrist Roll (10% reduced swing angle)")
+    print("   • Home Rest State (Quiet rest pose, wrist roll inhibited)")
+    print("=" * 75)
 
     if not os.path.exists(FIRMWARE_DIR):
         print(f"[!] Error: Firmware directory not found at {FIRMWARE_DIR}")
@@ -32,11 +37,14 @@ def main():
     # 1. Detect Arduino Port
     port = find_arduino_port()
     if not port:
-        print("[!] No Arduino board detected on USB.")
-        print("    👉 Please plug your Arduino Uno into your computer USB port.")
-        sys.exit(1)
+        print("\n[!] Arduino Uno not detected yet.")
+        print("    👉 Please plug your Arduino Uno USB cable into this computer.")
+        print("    Waiting for board connection (Press Ctrl+C to abort)...")
+        while not port:
+            time.sleep(1.0)
+            port = find_arduino_port()
 
-    print(f"[+] Detected Arduino Uno on port: {port}")
+    print(f"\n[+] Detected Arduino Uno on port: {port}")
 
     # 2. Compile Sketch
     print("[*] Compiling firmware/PostureGuard_Arm with arduino-cli...")
@@ -47,7 +55,7 @@ def main():
         sys.exit(1)
     print("[+] Compilation successful!")
 
-    # 3. Kill any process holding the serial port
+    # 3. Free serial port
     print(f"[*] Ensuring {port} is completely free for upload...")
     subprocess.run(["fuser", "-k", port], capture_output=True)
     time.sleep(1.0)
@@ -58,14 +66,23 @@ def main():
     res = subprocess.run(upload_cmd, capture_output=True, text=True)
 
     if res.returncode == 0:
-        print("=" * 65)
-        print(f"🎉 SUCCESS: PostureGuard Firmware pushed to {port}!")
-        print("    Motors are now calibrated and ready for the port 5000 dashboard.")
-        print("=" * 65)
+        print("\n" + "=" * 75)
+        print(" 🎉 SUCCESS: AUTONOMOUS FIRMWARE PUSHED TO ARDUINO!")
+        print("=" * 75)
+        print(" 👉 NEXT STEPS FOR WALL CHARGER OPERATION:")
+        print("   1. Unplug the USB cable from your computer.")
+        print("   2. Plug your Arduino Uno into your wall charger or 5V power adapter.")
+        print("   3. Turn ON your external 5V/5A power supply for the PCA9685 servos.")
+        print("   4. The robot arm will automatically run its 4-zone cleaning routine:")
+        print("      • Moves to a random zone (Left-Top, Left-Btm, Right-Top, Right-Btm)")
+        print("      • Runs 3s alternating CW/CCW wrist roll (10% reduced angle)")
+        print("      • Pauses for 2s")
+        print("      • Returns to Home rest state")
+        print("=" * 75)
         sys.exit(0)
     else:
         err = res.stderr or res.stdout
-        print(f"[!] Standard upload encountered sync error:\n{err}\n")
+        print(f"\n[!] Standard upload encountered error:\n{err}\n")
         print("💡 NOTE: If you see 'not in sync', press the small physical RESET button")
         print("   on the Arduino Uno once right when the upload command starts.")
         sys.exit(1)

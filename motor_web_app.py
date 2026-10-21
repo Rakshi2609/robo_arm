@@ -20,6 +20,7 @@ Usage:
   python3 motor_web_app.py [--port 5000] [--serial-port /dev/ttyUSB1]
 """
 
+import utils.session
 import os
 import sys
 import time

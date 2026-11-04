@@ -16,3 +16,4 @@ firmware/**/cache/
 related_repos/
 repos/
 node_modules
+config.bat

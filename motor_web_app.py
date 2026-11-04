@@ -20,6 +20,8 @@ Usage:
   python3 motor_web_app.py [--port 5000] [--serial-port /dev/ttyUSB1]
 """
 
+import utils.http_session
+import utils.transport
 import utils.session
 import os
 import sys
